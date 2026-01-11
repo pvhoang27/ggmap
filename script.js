@@ -5,7 +5,7 @@ let markers = [];
 let userLocationMarker = null;
 let currentRoute = null;
 let searchTimeout = null;
-let currentMode = 'car';
+let currentMode = "car";
 let startPoint = null;
 let endPoint = null;
 
@@ -18,7 +18,8 @@ function initMap() {
   currentLayer = L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
     }
   ).addTo(map);
@@ -30,9 +31,24 @@ function initMap() {
 // Add sample locations
 function addSampleLocations() {
   const sampleLocations = [
-    { name: "Hà Nội", lat: 21.0285, lng: 105.8542, info: "Thủ đô của Việt Nam" },
-    { name: "TP Hồ Chí Minh", lat: 10.8231, lng: 106.6297, info: "Thành phố lớn nhất" },
-    { name: "Đà Nẵng", lat: 16.0544, lng: 108.2022, info: "Thành phố đáng sống" },
+    {
+      name: "Hà Nội",
+      lat: 21.0285,
+      lng: 105.8542,
+      info: "Thủ đô của Việt Nam",
+    },
+    {
+      name: "TP Hồ Chí Minh",
+      lat: 10.8231,
+      lng: 106.6297,
+      info: "Thành phố lớn nhất",
+    },
+    {
+      name: "Đà Nẵng",
+      lat: 16.0544,
+      lng: 108.2022,
+      info: "Thành phố đáng sống",
+    },
     { name: "Hội An", lat: 15.8801, lng: 108.338, info: "Phố cổ nổi tiếng" },
     { name: "Huế", lat: 16.4637, lng: 107.5909, info: "Cố đô Việt Nam" },
   ];
@@ -56,7 +72,10 @@ function addMarker(lat, lng, title, description) {
     <div style="min-width: 200px;">
       <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #202124;">${title}</h3>
       <p style="margin: 0; font-size: 14px; color: #5f6368;">${description}</p>
-      <button onclick="openDirectionsTo(${lat}, ${lng}, '${title.replace(/'/g, "\\'")}')" 
+      <button onclick="openDirectionsTo(${lat}, ${lng}, '${title.replace(
+    /'/g,
+    "\\'"
+  )}')" 
               style="margin-top: 10px; padding: 8px 16px; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
           Chỉ đường
       </button>
@@ -71,7 +90,9 @@ function addMarker(lat, lng, title, description) {
 function onMapClick(e) {
   const { lat, lng } = e.latlng;
 
-  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+  fetch(
+    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+  )
     .then((response) => response.json())
     .then((data) => {
       const address = data.display_name || "Địa chỉ không xác định";
@@ -79,7 +100,10 @@ function onMapClick(e) {
         <h3>Vị trí đã chọn</h3>
         <p><strong>Tọa độ:</strong> ${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
         <p><strong>Địa chỉ:</strong> ${address}</p>
-        <button onclick="addCustomMarker(${lat}, ${lng}, '${address.replace(/'/g, "\\'")}')" 
+        <button onclick="addCustomMarker(${lat}, ${lng}, '${address.replace(
+        /'/g,
+        "\\'"
+      )}')" 
                 style="margin-top: 10px; padding: 8px 16px; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: 100%;">
             Thêm đánh dấu
         </button>
@@ -105,7 +129,11 @@ function search() {
 
   hideSuggestions();
 
-  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
+  fetch(
+    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+      query
+    )}&limit=1`
+  )
     .then((response) => response.json())
     .then((data) => {
       if (data.length > 0) {
@@ -114,13 +142,21 @@ function search() {
         const lng = parseFloat(result.lon);
 
         map.setView([lat, lng], 15);
-        const marker = addMarker(lat, lng, result.display_name, "Kết quả tìm kiếm");
+        const marker = addMarker(
+          lat,
+          lng,
+          result.display_name,
+          "Kết quả tìm kiếm"
+        );
         marker.openPopup();
 
         showInfoPanel(`
           <h3>${result.display_name}</h3>
           <p><strong>Tọa độ:</strong> ${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
-          <button onclick="openDirectionsTo(${lat}, ${lng}, '${result.display_name.replace(/'/g, "\\'")}')" 
+          <button onclick="openDirectionsTo(${lat}, ${lng}, '${result.display_name.replace(
+          /'/g,
+          "\\'"
+        )}')" 
                   style="margin-top: 10px; padding: 8px 16px; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: 100%;">
               Chỉ đường đến đây
           </button>
@@ -144,7 +180,11 @@ function searchWithSuggestions(query) {
   if (searchTimeout) clearTimeout(searchTimeout);
 
   searchTimeout = setTimeout(() => {
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+    fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        query
+      )}&limit=5`
+    )
       .then((response) => response.json())
       .then((data) => {
         showSuggestions(data);
@@ -161,15 +201,21 @@ function showSuggestions(results) {
     return;
   }
 
-  suggestionsDiv.innerHTML = results.map((result) => `
-    <div class="suggestion-item" onclick="selectSuggestion(${result.lat}, ${result.lon}, '${result.display_name.replace(/'/g, "\\'")}')">
+  suggestionsDiv.innerHTML = results
+    .map(
+      (result) => `
+    <div class="suggestion-item" onclick="selectSuggestion(${result.lat}, ${
+        result.lon
+      }, '${result.display_name.replace(/'/g, "\\'")}')">
       <div class="suggestion-icon">📍</div>
       <div class="suggestion-text">
         <div class="main">${result.display_name.split(",")[0]}</div>
         <div class="sub">${result.display_name}</div>
       </div>
     </div>
-  `).join("");
+  `
+    )
+    .join("");
 
   suggestionsDiv.classList.add("active");
 }
@@ -189,7 +235,10 @@ function selectSuggestion(lat, lng, name) {
   showInfoPanel(`
     <h3>${name}</h3>
     <p><strong>Tọa độ:</strong> ${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
-    <button onclick="openDirectionsTo(${lat}, ${lng}, '${name.replace(/'/g, "\\'")}')" 
+    <button onclick="openDirectionsTo(${lat}, ${lng}, '${name.replace(
+    /'/g,
+    "\\'"
+  )}')" 
             style="margin-top: 10px; padding: 8px 16px; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: 100%;">
         Chỉ đường đến đây
     </button>
@@ -228,12 +277,18 @@ function getUserLocation() {
 
         map.setView([lat, lng], 15);
 
-        userLocationMarker.bindPopup(`
+        userLocationMarker
+          .bindPopup(
+            `
           <div style="min-width: 200px;">
             <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #202124;">Vị trí của bạn</h3>
-            <p style="margin: 0; font-size: 14px; color: #5f6368;">Độ chính xác: ${Math.round(accuracy)}m</p>
+            <p style="margin: 0; font-size: 14px; color: #5f6368;">Độ chính xác: ${Math.round(
+              accuracy
+            )}m</p>
           </div>
-        `).openPopup();
+        `
+          )
+          .openPopup();
       },
       () => {
         alert("Không thể lấy vị trí của bạn");
@@ -295,12 +350,17 @@ function calculateRoute() {
 
   clearRoute();
 
-  const profile = currentMode === 'car' ? 'driving' : currentMode === 'bike' ? 'cycling' : 'foot';
+  const profile =
+    currentMode === "car"
+      ? "driving"
+      : currentMode === "bike"
+      ? "cycling"
+      : "foot";
   const url = `https://router.project-osrm.org/route/v1/${profile}/${startPoint.lng},${startPoint.lat};${endPoint.lng},${endPoint.lat}?overview=full&geometries=geojson&steps=true`;
 
   fetch(url)
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       if (data.routes && data.routes.length > 0) {
         displayRoute(data.routes[0]);
       } else {
@@ -313,31 +373,35 @@ function calculateRoute() {
 }
 
 function displayRoute(route) {
-  const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
-  
+  const coords = route.geometry.coordinates.map((c) => [c[1], c[0]]);
+
   currentRoute = L.polyline(coords, {
-    color: '#1a73e8',
+    color: "#1a73e8",
     weight: 5,
-    opacity: 0.7
+    opacity: 0.7,
   }).addTo(map);
 
   L.marker([startPoint.lat, startPoint.lng], {
     icon: L.divIcon({
-      className: 'route-marker',
+      className: "route-marker",
       html: '<div style="background: #34A853; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>',
       iconSize: [20, 20],
-      iconAnchor: [10, 10]
-    })
-  }).addTo(map).bindPopup(startPoint.name);
+      iconAnchor: [10, 10],
+    }),
+  })
+    .addTo(map)
+    .bindPopup(startPoint.name);
 
   L.marker([endPoint.lat, endPoint.lng], {
     icon: L.divIcon({
-      className: 'route-marker',
+      className: "route-marker",
       html: '<div style="background: #EA4335; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>',
       iconSize: [20, 20],
-      iconAnchor: [10, 10]
-    })
-  }).addTo(map).bindPopup(endPoint.name);
+      iconAnchor: [10, 10],
+    }),
+  })
+    .addTo(map)
+    .bindPopup(endPoint.name);
 
   map.fitBounds(currentRoute.getBounds(), { padding: [50, 50] });
   displayRouteInfo(route);
@@ -348,23 +412,26 @@ function displayRouteInfo(route) {
   const duration = Math.round(route.duration / 60);
   const hours = Math.floor(duration / 60);
   const minutes = duration % 60;
-  
-  const timeStr = hours > 0 ? `${hours} giờ ${minutes} phút` : `${minutes} phút`;
 
-  const icons = { car: '🚗', bike: '🚴', walk: '🚶' };
-  const names = { car: 'Ô tô', bike: 'Xe đạp', walk: 'Đi bộ' };
-  
-  let stepsHtml = '';
+  const timeStr =
+    hours > 0 ? `${hours} giờ ${minutes} phút` : `${minutes} phút`;
+
+  const icons = { car: "🚗", bike: "🚴", walk: "🚶" };
+  const names = { car: "Ô tô", bike: "Xe đạp", walk: "Đi bộ" };
+
+  let stepsHtml = "";
   if (route.legs && route.legs[0] && route.legs[0].steps) {
-    stepsHtml = route.legs[0].steps.map((step, i) => {
-      const dist = step.distance > 1000 
-        ? `${(step.distance / 1000).toFixed(2)} km`
-        : `${Math.round(step.distance)} m`;
-      
-      let text = step.maneuver ? getInstruction(step.maneuver) : 'Tiếp tục';
-      if (step.name) text += ` vào ${step.name}`;
-      
-      return `
+    stepsHtml = route.legs[0].steps
+      .map((step, i) => {
+        const dist =
+          step.distance > 1000
+            ? `${(step.distance / 1000).toFixed(2)} km`
+            : `${Math.round(step.distance)} m`;
+
+        let text = step.maneuver ? getInstruction(step.maneuver) : "Tiếp tục";
+        if (step.name) text += ` vào ${step.name}`;
+
+        return `
         <div class="route-step">
           <div class="step-icon">${i + 1}</div>
           <div class="step-content">
@@ -373,7 +440,8 @@ function displayRouteInfo(route) {
           </div>
         </div>
       `;
-    }).join('');
+      })
+      .join("");
   }
 
   document.getElementById("directionsResults").innerHTML = `
@@ -391,22 +459,22 @@ function displayRouteInfo(route) {
 function getInstruction(m) {
   const t = m.type;
   const d = m.modifier;
-  
-  if (t === 'depart') return 'Bắt đầu';
-  if (t === 'arrive') return 'Đến nơi';
-  if (t === 'turn') {
-    if (d === 'left') return 'Rẽ trái';
-    if (d === 'right') return 'Rẽ phải';
-    if (d === 'sharp left') return 'Rẽ trái gấp';
-    if (d === 'sharp right') return 'Rẽ phải gấp';
-    if (d === 'slight left') return 'Rẽ trái nhẹ';
-    if (d === 'slight right') return 'Rẽ phải nhẹ';
+
+  if (t === "depart") return "Bắt đầu";
+  if (t === "arrive") return "Đến nơi";
+  if (t === "turn") {
+    if (d === "left") return "Rẽ trái";
+    if (d === "right") return "Rẽ phải";
+    if (d === "sharp left") return "Rẽ trái gấp";
+    if (d === "sharp right") return "Rẽ phải gấp";
+    if (d === "slight left") return "Rẽ trái nhẹ";
+    if (d === "slight right") return "Rẽ phải nhẹ";
   }
-  if (t === 'continue') return 'Tiếp tục';
-  if (t === 'merge') return 'Nhập làn';
-  if (t === 'roundabout') return 'Vào vòng xuyến';
-  
-  return 'Tiếp tục đi thẳng';
+  if (t === "continue") return "Tiếp tục";
+  if (t === "merge") return "Nhập làn";
+  if (t === "roundabout") return "Vào vòng xuyến";
+
+  return "Tiếp tục đi thẳng";
 }
 
 function clearRoute() {
@@ -414,22 +482,28 @@ function clearRoute() {
     map.removeLayer(currentRoute);
     currentRoute = null;
   }
-  
+
   map.eachLayer((layer) => {
-    if (layer.options && layer.options.icon && layer.options.icon.options.className === 'route-marker') {
+    if (
+      layer.options &&
+      layer.options.icon &&
+      layer.options.icon.options.className === "route-marker"
+    ) {
       map.removeLayer(layer);
     }
   });
-  
-  document.getElementById("directionsResults").innerHTML = '';
+
+  document.getElementById("directionsResults").innerHTML = "";
 }
 
 function setTransportMode(mode) {
   currentMode = mode;
-  
-  document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
-  
+
+  document
+    .querySelectorAll(".mode-btn")
+    .forEach((btn) => btn.classList.remove("active"));
+  document.querySelector(`[data-mode="${mode}"]`).classList.add("active");
+
   if (startPoint && endPoint) {
     calculateRoute();
   }
@@ -477,7 +551,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initMap();
 
   document.getElementById("searchBtn").addEventListener("click", search);
-  
+
   const searchInput = document.getElementById("searchInput");
   searchInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") search();
@@ -485,19 +559,27 @@ document.addEventListener("DOMContentLoaded", function () {
   searchInput.addEventListener("input", (e) => {
     searchWithSuggestions(e.target.value);
   });
-  
+
   document.addEventListener("click", (e) => {
-    if (!e.target.closest('.search-container')) {
+    if (!e.target.closest(".search-container")) {
       hideSuggestions();
     }
   });
 
   document.getElementById("menuBtn").addEventListener("click", toggleSidebar);
-  document.getElementById("closeSidebar").addEventListener("click", toggleSidebar);
-  document.getElementById("locateBtn").addEventListener("click", getUserLocation);
-  document.getElementById("zoomInBtn").addEventListener("click", () => map.zoomIn());
-  document.getElementById("zoomOutBtn").addEventListener("click", () => map.zoomOut());
-  
+  document
+    .getElementById("closeSidebar")
+    .addEventListener("click", toggleSidebar);
+  document
+    .getElementById("locateBtn")
+    .addEventListener("click", getUserLocation);
+  document
+    .getElementById("zoomInBtn")
+    .addEventListener("click", () => map.zoomIn());
+  document
+    .getElementById("zoomOutBtn")
+    .addEventListener("click", () => map.zoomOut());
+
   document.getElementById("layersBtn").addEventListener("click", () => {
     document.getElementById("layerSelector").classList.toggle("active");
   });
@@ -508,36 +590,48 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  document.getElementById("closeInfo").addEventListener("click", closeInfoPanel);
+  document
+    .getElementById("closeInfo")
+    .addEventListener("click", closeInfoPanel);
   document.getElementById("streetViewBtn").addEventListener("click", () => {
     alert("Chức năng Street View đang được phát triển");
   });
 
-  document.getElementById("directionsBtn").addEventListener("click", openDirectionsPanel);
-  document.getElementById("closeDirections").addEventListener("click", closeDirectionsPanel);
-  document.getElementById("useCurrentLocation").addEventListener("click", useCurrentLocation);
-  
-  document.querySelectorAll('.mode-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+  document
+    .getElementById("directionsBtn")
+    .addEventListener("click", openDirectionsPanel);
+  document
+    .getElementById("closeDirections")
+    .addEventListener("click", closeDirectionsPanel);
+  document
+    .getElementById("useCurrentLocation")
+    .addEventListener("click", useCurrentLocation);
+
+  document.querySelectorAll(".mode-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
       setTransportMode(this.dataset.mode);
     });
   });
-  
+
   const startInput = document.getElementById("startPoint");
   const endInput = document.getElementById("endPoint");
-  
+
   startInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       const q = startInput.value.trim();
       if (q) {
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`)
-          .then(r => r.json())
-          .then(d => {
+        fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+            q
+          )}&limit=1`
+        )
+          .then((r) => r.json())
+          .then((d) => {
             if (d.length > 0) {
               startPoint = {
                 lat: parseFloat(d[0].lat),
                 lng: parseFloat(d[0].lon),
-                name: d[0].display_name
+                name: d[0].display_name,
               };
               startInput.value = d[0].display_name;
               if (endPoint) calculateRoute();
@@ -546,19 +640,23 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
-  
+
   endInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       const q = endInput.value.trim();
       if (q) {
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`)
-          .then(r => r.json())
-          .then(d => {
+        fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+            q
+          )}&limit=1`
+        )
+          .then((r) => r.json())
+          .then((d) => {
             if (d.length > 0) {
               endPoint = {
                 lat: parseFloat(d[0].lat),
                 lng: parseFloat(d[0].lon),
-                name: d[0].display_name
+                name: d[0].display_name,
               };
               endInput.value = d[0].display_name;
               if (startPoint) calculateRoute();
